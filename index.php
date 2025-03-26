@@ -1,149 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fire Alarm Monitoring</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Smart Fire System Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js" defer></script>
     <style>
-        body {
-            background-color: #121212;
-            color: white;
-        }
-        .gauge-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .gauge {
-            max-width: 200px;
-            margin: auto;
-        }
         .sidebar {
-            width: 250px;
             height: 100vh;
+            width: 250px;
             position: fixed;
             background: #343a40;
             padding-top: 20px;
-            color: white;
         }
         .sidebar a {
-            color: white;
             padding: 10px;
-            display: block;
             text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .sidebar a:hover {
-            background: #495057;
+        .sidebar a.active {
+            background: #198754;
         }
-        .main-content {
-            margin-left: 260px;
-            padding: 20px;
+        .card-status {
+            padding: 15px;
+            color: white;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <span class="navbar-brand mb-0 h1 ms-3">Fire Alarm Monitoring</span>
-    </nav>
-    
-    <div class="sidebar">
-        <h4 class="text-center">Dashboard</h4>
-        <a href="#"><i class="material-icons">dashboard</i> Home</a>
-        <a href="#"><i class="material-icons">settings</i> Settings</a>
-        <a href="#"><i class="material-icons">logout</i> Logout</a>
+    <div class="d-flex">
+        <nav class="sidebar">
+            <a href="#" class="active"><span class="material-icons">dashboard</span> Dashboard</a>
+            <a href="#"><span class="material-icons">settings</span> Settings</a>
+            <a href="#"><span class="material-icons">notifications</span> Alerts</a>
+        </nav>
+        <div class="container-fluid" style="margin-left: 260px;">
+            <header class="bg-success text-center py-3">
+                <h1 class="fw-bold h3 text-white my-1">Smart Fire System Dashboard</h1>
+            </header>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div id="statusCard" class="card-status bg-secondary">
+                        <h5>System Status</h5>
+                        <p id="statusMessage">Fetching data...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <canvas id="tempChart"></canvas>
+                    <div id="tempValue">Temperature: 0°C</div>
+                </div>
+                <div class="col-md-3">
+                    <canvas id="smokeChart"></canvas>
+                    <div id="smokeValue">Smoke Level: 0</div>
+                </div>
+                <div class="col-md-3">
+                    <canvas id="humidityChart"></canvas>
+                    <div id="humidityValue">Humidity: 0%</div>
+                </div>
+                <div class="col-md-3">
+                    <canvas id="flameChart"></canvas>
+                    <div id="flameValue">Flame Level: 0</div>
+                </div>
+            </div>
+            <div class="table-responsive mt-4">
+                <table class="table table-dark table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                            <th>Guidance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Temperature</td>
+                            <td id="tempTableValue">0°C</td>
+                            <td id="tempStatus">Normal</td>
+                            <td id="tempGuide">Safe</td>
+                        </tr>
+                        <tr>
+                            <td>Smoke Level</td>
+                            <td id="smokeTableValue">0</td>
+                            <td id="smokeStatus">Normal</td>
+                            <td id="smokeGuide">Safe</td>
+                        </tr>
+                        <tr>
+                            <td>Humidity</td>
+                            <td id="humidityTableValue">0%</td>
+                            <td id="humidityStatus">Normal</td>
+                            <td id="humidityGuide">Safe</td>
+                        </tr>
+                        <tr>
+                            <td>Flame</td>
+                            <td id="flameTableValue">0</td>
+                            <td id="flameStatus">Normal</td>
+                            <td id="flameGuide">Safe</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    
-    <div class="main-content">
-        <div class="row text-center">
-            <div class="col-md-6 gauge-container">
-                <canvas id="tempChart" class="gauge"></canvas>
-                <div id="tempValue">Temperature: 0°C</div>
-            </div>
-            <div class="col-md-6 gauge-container">
-                <canvas id="smokeChart" class="gauge"></canvas>
-                <div id="smokeValue">Smoke Level: 0</div>
-            </div>
-        </div>
-        <div class="row text-center mt-4">
-            <div class="col-md-6 gauge-container">
-                <canvas id="humidityChart" class="gauge"></canvas>
-                <div id="humidityValue">Humidity: 0%</div>
-            </div>
-            <div class="col-md-6 gauge-container">
-                <canvas id="flameChart" class="gauge"></canvas>
-                <div id="flameValue">Flame Level: 0</div>
-            </div>
-        </div>
-        <div class="table-responsive mt-4">
-            <table class="table table-dark table-bordered">
-                <thead>
-                    <tr>
-                        <th>Parameter</th>
-                        <th>Value</th>
-                        <th>Status</th>
-                        <th>Guidance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Temperature</td>
-                        <td id="tempTableValue">0°C</td>
-                        <td id="tempStatus">Normal</td>
-                        <td id="tempGuide">Safe</td>
-                    </tr>
-                    <tr>
-                        <td>Smoke Level</td>
-                        <td id="smokeTableValue">0</td>
-                        <td id="smokeStatus">Normal</td>
-                        <td id="smokeGuide">Safe</td>
-                    </tr>
-                    <tr>
-                        <td>Humidity</td>
-                        <td id="humidityTableValue">0%</td>
-                        <td id="humidityStatus">Normal</td>
-                        <td id="humidityGuide">Safe</td>
-                    </tr>
-                    <tr>
-                        <td>Flame</td>
-                        <td id="flameTableValue">0</td>
-                        <td id="flameStatus">Normal</td>
-                        <td id="flameGuide">Safe</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
     <script>
         let tempChart, smokeChart, humidityChart, flameChart;
 
         function initializeCharts() {
-            const ctxTemp = document.getElementById('tempChart').getContext('2d');
-            const ctxSmoke = document.getElementById('smokeChart').getContext('2d');
-            const ctxHumidity = document.getElementById('humidityChart').getContext('2d');
-            const ctxFlame = document.getElementById('flameChart').getContext('2d');
-
-            tempChart = new Chart(ctxTemp, {
-                type: 'doughnut',
-                data: { labels: ['Temperature'], datasets: [{ data: [0], backgroundColor: ['red'] }] }
-            });
-
-            smokeChart = new Chart(ctxSmoke, {
-                type: 'doughnut',
-                data: { labels: ['Smoke'], datasets: [{ data: [0], backgroundColor: ['gray'] }] }
-            });
-
-            humidityChart = new Chart(ctxHumidity, {
-                type: 'doughnut',
-                data: { labels: ['Humidity'], datasets: [{ data: [0], backgroundColor: ['blue'] }] }
-            });
-
-            flameChart = new Chart(ctxFlame, {
-                type: 'doughnut',
-                data: { labels: ['Flame'], datasets: [{ data: [0], backgroundColor: ['orange'] }] }
-            });
+            tempChart = new Chart(document.getElementById('tempChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['red'] }] } });
+            smokeChart = new Chart(document.getElementById('smokeChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['gray'] }] } });
+            humidityChart = new Chart(document.getElementById('humidityChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['blue'] }] } });
+            flameChart = new Chart(document.getElementById('flameChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['orange'] }] } });
         }
 
         async function fetchData() {
@@ -151,15 +126,13 @@
                 const response = await fetch('server/controller.php');
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
-                console.log('Fetched Data:', data);
-                updateCharts(data);
-                updateTable(data);
+                updateDashboard(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         }
 
-        function updateCharts(data) {
+        function updateDashboard(data) {
             tempChart.data.datasets[0].data = [data.temperature];
             smokeChart.data.datasets[0].data = [data.smoke];
             humidityChart.data.datasets[0].data = [data.humidity];
@@ -168,14 +141,25 @@
             smokeChart.update();
             humidityChart.update();
             flameChart.update();
-        }
 
-        function updateTable(data) {
             document.getElementById('tempTableValue').textContent = `${data.temperature}°C`;
             document.getElementById('smokeTableValue').textContent = `${data.smoke}`;
             document.getElementById('humidityTableValue').textContent = `${data.humidity}%`;
             document.getElementById('flameTableValue').textContent = `${data.flame}`;
-            dcument.getElementById('tempValue').textContent = `${data.temperature}°C`;
+
+            let status = "Normal";
+            let bgColor = "bg-success";
+            if (data.temperature > 50 || data.smoke > 300 || data.flame > 1) {
+                status = "Critical";
+                bgColor = "bg-danger";
+            } else if (data.temperature > 30 || data.smoke > 100) {
+                status = "Warning";
+                bgColor = "bg-warning";
+            }
+
+            const statusCard = document.getElementById('statusCard');
+            statusCard.className = `card-status ${bgColor}`;
+            document.getElementById('statusMessage').textContent = `System Status: ${status}`;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
