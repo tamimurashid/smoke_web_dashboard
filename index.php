@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div class="table-responsive mt-4">
-                <table class="table table-dark table-bordered">
+                <table class="table table-light table-bordered">
                     <thead>
                         <tr>
                             <th>Parameter</th>
@@ -149,10 +149,10 @@
 
             let status = "Normal";
             let bgColor = "bg-success";
-            if (data.temperature > 50 || data.smoke > 300 || data.flame > 1) {
+            if (data.temperature > 40 &&  data.smoke > 550 && data.flame == 0) {
                 status = "Critical";
                 bgColor = "bg-danger";
-            } else if (data.temperature > 30 || data.smoke > 100) {
+            } else if (data.temperature > 30 || data.smoke > 550) {
                 status = "Warning";
                 bgColor = "bg-warning";
             }
