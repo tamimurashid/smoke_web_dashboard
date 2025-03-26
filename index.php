@@ -175,6 +175,7 @@
             document.getElementById('smokeTableValue').textContent = `${data.smoke}`;
             document.getElementById('humidityTableValue').textContent = `${data.humidity}%`;
             document.getElementById('flameTableValue').textContent = `${data.flame}`;
+            dcument.getElementById('tempValue').textContent = `${data.temperature}°C`;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
