@@ -167,7 +167,7 @@
             updateStatusAndGuidance("temp", data.temperature, 40, "High Temperature Detected!", "Critical Fire Risk", "Temperature is safe");
             updateStatusAndGuidance("smoke", data.smoke, 550, "High Smoke Levels!", "Evacuate Immediately", "Smoke levels normal");
             updateStatusAndGuidance("humidity", data.humidity, 30, "Low Humidity!", "Possible Dry Conditions", "Humidity level is normal");
-            updateStatusAndGuidance("flame", data.flame, 1, "Flame Detected!", "Fire Emergency!", "No flame detected");
+            updateStatusAndGuidance("flame", data.flame, 0, "Fire detected", "Fire Emergency!", "flame detected");
 
             // Update overall system status
             let status = "Normal";
