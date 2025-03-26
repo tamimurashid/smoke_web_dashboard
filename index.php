@@ -37,14 +37,22 @@
 <body>
     <div class="d-flex">
         <nav class="sidebar">
-            <a href="#" class="active"><span class="material-icons">dashboard</span> Dashboard</a>
-            <a href="#"><span class="material-icons">settings</span> Settings</a>
-            <a href="#"><span class="material-icons">notifications</span> Alerts</a>
+            <div class="links mt-3">
+                <a href="#" class="active"><span class="material-icons">dashboard</span> Dashboard</a>
+                <a href="#"><span class="material-icons">settings</span> Settings</a>
+                <a href="#"><span class="material-icons">notifications</span> Alerts</a>
+            </div>
         </nav>
-        <div class="container-fluid" style="margin-left: 260px;">
-            <header class="bg-success text-center py-3">
-                <h1 class="fw-bold h3 text-white my-1">Smart Fire System Dashboard</h1>
-            </header>
+        <div class="container-fluid mt-2" style="margin-left: 260px;">
+            <nav class="navbar navbar-success bg-success">
+                <div class="container-fluid">
+                    <a class="navbar-brand text-white">Smart Fire System Detection</a>
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
             <div class="row mt-3">
                 <div class="col-md-6">
                     <div id="statusCard" class="card-status bg-secondary">
