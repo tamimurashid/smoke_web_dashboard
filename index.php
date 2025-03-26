@@ -155,6 +155,9 @@
             } else if (data.temperature > 30 || data.smoke > 550) {
                 status = "Warning";
                 bgColor = "bg-warning";
+            }else if(data.temperature < 20){
+                status = "too cold";
+                bgColor = "bg-info";
             }
 
             const statusCard = document.getElementById('statusCard');
