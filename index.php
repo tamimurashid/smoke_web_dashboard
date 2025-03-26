@@ -110,7 +110,7 @@
                         </tr>
                         <tr>
                             <td>Flame</td>
-                            <td id="flameTableValue">0</td>
+                            <td id="flameTableValue">1</td>
                             <td id="flameStatus">Normal</td>
                             <td id="flameGuide">Safe</td>
                         </tr>
@@ -141,6 +141,7 @@
         }
 
         function updateDashboard(data) {
+            // Update gauge charts
             tempChart.data.datasets[0].data = [data.temperature];
             smokeChart.data.datasets[0].data = [data.smoke];
             humidityChart.data.datasets[0].data = [data.humidity];
@@ -150,27 +151,61 @@
             humidityChart.update();
             flameChart.update();
 
+            // Update labels under gauges
+            document.getElementById('tempValue').textContent = `Temperature: ${data.temperature}°C`;
+            document.getElementById('smokeValue').textContent = `Smoke Level: ${data.smoke}`;
+            document.getElementById('humidityValue').textContent = `Humidity: ${data.humidity}%`;
+            document.getElementById('flameValue').textContent = `Flame Level: ${data.flame}`;
+
+            // Update table values
             document.getElementById('tempTableValue').textContent = `${data.temperature}°C`;
             document.getElementById('smokeTableValue').textContent = `${data.smoke}`;
             document.getElementById('humidityTableValue').textContent = `${data.humidity}%`;
             document.getElementById('flameTableValue').textContent = `${data.flame}`;
 
+            // Determine status and guidance
+            updateStatusAndGuidance("temp", data.temperature, 40, "High Temperature Detected!", "Critical Fire Risk", "Temperature is safe");
+            updateStatusAndGuidance("smoke", data.smoke, 550, "High Smoke Levels!", "Evacuate Immediately", "Smoke levels normal");
+            updateStatusAndGuidance("humidity", data.humidity, 30, "Low Humidity!", "Possible Dry Conditions", "Humidity level is normal");
+            updateStatusAndGuidance("flame", data.flame, 1, "Flame Detected!", "Fire Emergency!", "No flame detected");
+
+            // Update overall system status
             let status = "Normal";
             let bgColor = "bg-success";
-            if (data.temperature > 40 &&  data.smoke > 550 && data.flame == 0) {
-                status = "Critical";
+            
+            if (data.temperature > 40 && data.smoke > 550 && data.flame === 0) {
+                status = "Critical Fire Condition!";
                 bgColor = "bg-danger";
-            } else if (data.temperature > 30 || data.smoke > 550) {
-                status = "Warning";
+            } else if (data.temperature > 30 || data.smoke > 550 || data.flame === 0) {
+                status = "Warning: Potential Fire Risk";
                 bgColor = "bg-warning";
-            }else if(data.temperature < 20){
-                status = "too cold";
+            } else if (data.temperature < 20) {
+                status = "Low Temperature";
                 bgColor = "bg-info";
             }
 
             const statusCard = document.getElementById('statusCard');
             statusCard.className = `card-status ${bgColor}`;
             document.getElementById('statusMessage').textContent = `System Status: ${status}`;
+        }
+
+        // Function to update status and guidance dynamically
+        function updateStatusAndGuidance(param, value, threshold, warningMsg, dangerMsg, safeMsg) {
+            const statusElement = document.getElementById(`${param}Status`);
+            const guideElement = document.getElementById(`${param}Guide`);
+
+            if (value >= threshold) {
+                statusElement.textContent = "Warning";
+                guideElement.textContent = warningMsg;
+            } else {
+                statusElement.textContent = "Normal";
+                guideElement.textContent = safeMsg;
+            }
+
+            if (param === "flame" && value === 0) {
+                statusElement.textContent = "Danger";
+                guideElement.textContent = dangerMsg;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
