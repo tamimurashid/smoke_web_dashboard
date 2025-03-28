@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script>
+    <script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script> 
     <script src="script.js" defer></script>
     <style>
         .sidebar {
@@ -64,107 +64,172 @@
             </div>
             <div class="row mt-4">
                 <div class="col-md-3">
-                    <canvas id="tempGauge"></canvas>
+                    <canvas id="tempChart"></canvas>
+                    <div id="tempValue">Temperature: 0°C</div>
                 </div>
                 <div class="col-md-3">
-                    <canvas id="humidityGauge"></canvas>
+                    <canvas id="smokeChart"></canvas>
+                    <div id="smokeValue">Smoke Level: 0</div>
                 </div>
                 <div class="col-md-3">
-                    <canvas id="smokeGauge"></canvas>
+                    <canvas id="humidityChart"></canvas>
+                    <div id="humidityValue">Humidity: 0%</div>
                 </div>
                 <div class="col-md-3">
-                    <canvas id="flameGauge"></canvas>
+                    <canvas id="flameChart"></canvas>
+                    <div id="flameValue">Flame Level: 0</div>
                 </div>
             </div>
-            <script>
-                let tempGauge = new RadialGauge({
-                    renderTo: 'tempGauge',
-                    width: 200,
-                    height: 200,
-                    units: "°C",
-                    minValue: -10,
-                    maxValue: 100,
-                    majorTicks: [0, 20, 40, 60, 80, 100],
-                    highlights: [
-                        { from: 0, to: 30, color: "green" },
-                        { from: 31, to: 60, color: "yellow" },
-                        { from: 61, to: 100, color: "red" }
-                    ],
-                    value: 0,
-                    animationDuration: 1500
-                }).draw();
-                
-                let humidityGauge = new RadialGauge({
-                    renderTo: 'humidityGauge',
-                    width: 200,
-                    height: 200,
-                    units: "%",
-                    minValue: 0,
-                    maxValue: 100,
-                    majorTicks: [0, 20, 40, 60, 80, 100],
-                    highlights: [
-                        { from: 0, to: 30, color: "red" },
-                        { from: 31, to: 70, color: "green" },
-                        { from: 71, to: 100, color: "blue" }
-                    ],
-                    value: 0,
-                    animationDuration: 1500
-                }).draw();
-                
-                let smokeGauge = new RadialGauge({
-                    renderTo: 'smokeGauge',
-                    width: 200,
-                    height: 200,
-                    units: "AQI",
-                    minValue: 0,
-                    maxValue: 500,
-                    majorTicks: [0, 100, 200, 300, 400, 500],
-                    highlights: [
-                        { from: 0, to: 100, color: "green" },
-                        { from: 101, to: 300, color: "yellow" },
-                        { from: 301, to: 500, color: "red" }
-                    ],
-                    value: 0,
-                    animationDuration: 1500
-                }).draw();
-                
-                let flameGauge = new RadialGauge({
-                    renderTo: 'flameGauge',
-                    width: 200,
-                    height: 200,
-                    units: "Flame Intensity",
-                    minValue: 0,
-                    maxValue: 10,
-                    majorTicks: [0, 2, 4, 6, 8, 10],
-                    highlights: [
-                        { from: 0, to: 3, color: "green" },
-                        { from: 4, to: 7, color: "yellow" },
-                        { from: 8, to: 10, color: "red" }
-                    ],
-                    value: 0,
-                    animationDuration: 1500
-                }).draw();
-                
-                async function fetchData() {
-                    try {
-                        const response = await fetch('server/controller.php');
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        const data = await response.json();
-                        tempGauge.value = data.temperature;
-                        humidityGauge.value = data.humidity;
-                        smokeGauge.value = data.smoke;
-                        flameGauge.value = data.flame;
-                    } catch (error) {
-                        console.error('Error fetching data:', error);
-                    }
-                }
-                
-                document.addEventListener('DOMContentLoaded', () => {
-                    fetchData();
-                    setInterval(fetchData, 5000);
-                });
-            </script>
+            <div class="row mt-4">
+                 <div class="row mt-4">
+                    <div class="col-md-3">
+                        <canvas id="tempGauge"></canvas>
+                    </div>
+                    <div class="col-md-3">
+                        <canvas id="humidityGauge"></canvas>
+                    </div>
+                    <div class="col-md-3">
+                        <canvas id="smokeGauge"></canvas>
+                    </div>
+                    <div class="col-md-3">
+                        <canvas id="flameGauge"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive mt-4">
+                <table class="table table-light table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                            <th>Guidance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Temperature</td>
+                            <td id="tempTableValue">0°C</td>
+                            <td id="tempStatus">Normal</td>
+                            <td id="tempGuide">Safe</td>
+                        </tr>
+                        <tr>
+                            <td>Smoke Level</td>
+                            <td id="smokeTableValue">0</td>
+                            <td id="smokeStatus">Normal</td>
+                            <td id="smokeGuide">Safe</td>
+                        </tr>
+                        <tr>
+                            <td>Humidity</td>
+                            <td id="humidityTableValue">0%</td>
+                            <td id="humidityStatus">Normal</td>
+                            <td id="humidityGuide">Safe</td>
+                        </tr>
+                        <tr>
+                            <td>Flame</td>
+                            <td id="flameTableValue">1</td>
+                            <td id="flameStatus">Normal</td>
+                            <td id="flameGuide">Safe</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+    <script>
+        let tempChart, smokeChart, humidityChart, flameChart;
+
+        function initializeCharts() {
+            tempChart = new Chart(document.getElementById('tempChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['red'] }] } });
+            smokeChart = new Chart(document.getElementById('smokeChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['gray'] }] } });
+            humidityChart = new Chart(document.getElementById('humidityChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['blue'] }] } });
+            flameChart = new Chart(document.getElementById('flameChart').getContext('2d'), { type: 'doughnut', data: { datasets: [{ data: [0], backgroundColor: ['orange'] }] } });
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch('server/controller.php');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                updateDashboard(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function updateDashboard(data) {
+            // Update gauge charts
+            tempChart.data.datasets[0].data = [data.temperature];
+            smokeChart.data.datasets[0].data = [data.smoke];
+            humidityChart.data.datasets[0].data = [data.humidity];
+            flameChart.data.datasets[0].data = [data.flame];
+            tempChart.update();
+            smokeChart.update();
+            humidityChart.update();
+            flameChart.update();
+
+            // Update labels under gauges
+            document.getElementById('tempValue').textContent = `Temperature: ${data.temperature}°C`;
+            document.getElementById('smokeValue').textContent = `Smoke Level: ${data.smoke}`;
+            document.getElementById('humidityValue').textContent = `Humidity: ${data.humidity}%`;
+            document.getElementById('flameValue').textContent = `Flame Level: ${data.flame}`;
+
+            // Update table values
+            document.getElementById('tempTableValue').textContent = `${data.temperature}°C`;
+            document.getElementById('smokeTableValue').textContent = `${data.smoke}`;
+            document.getElementById('humidityTableValue').textContent = `${data.humidity}%`;
+            document.getElementById('flameTableValue').textContent = `${data.flame}`;
+
+            // Determine status and guidance
+            updateStatusAndGuidance("temp", data.temperature, 40, "High Temperature Detected!", "Critical Fire Risk", "Temperature is safe");
+            updateStatusAndGuidance("smoke", data.smoke, 550, "High Smoke Levels!", "Evacuate Immediately", "Smoke levels normal");
+            updateStatusAndGuidance("humidity", data.humidity, 30, "Low Humidity!", "Possible Dry Conditions", "Humidity level is normal");
+            updateStatusAndGuidance("flame", data.flame, 0, "No flame detected", "Fire Emergency!", "Fire detected");
+
+            // Update overall system status
+            let status = "Normal";
+            let bgColor = "bg-success";
+            
+            if (data.temperature > 40 && data.smoke > 550 && data.flame === 0) {
+                status = "Critical Fire Condition!";
+                bgColor = "bg-danger";
+            } else if (data.temperature > 30 || data.smoke > 550 || data.flame === 0) {
+                status = "Warning: Potential Fire Risk";
+                bgColor = "bg-warning";
+            } else if (data.temperature < 20) {
+                status = "Low Temperature";
+                bgColor = "bg-info";
+            }
+
+            const statusCard = document.getElementById('statusCard');
+            statusCard.className = `card-status ${bgColor}`;
+            document.getElementById('statusMessage').textContent = `System Status: ${status}`;
+        }
+
+        // Function to update status and guidance dynamically
+        function updateStatusAndGuidance(param, value, threshold, warningMsg, dangerMsg, safeMsg) {
+            const statusElement = document.getElementById(`${param}Status`);
+            const guideElement = document.getElementById(`${param}Guide`);
+
+            if (value >= threshold) {
+                statusElement.textContent = "Warning";
+                guideElement.textContent = warningMsg;
+            } else {
+                statusElement.textContent = "Normal";
+                guideElement.textContent = safeMsg;
+            }
+
+            if (param === "flame" && value === 0) {
+                statusElement.textContent = "Danger";
+                guideElement.textContent = dangerMsg;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeCharts();
+            fetchData();
+            setInterval(fetchData, 5000);
+        });
+    </script>
 </body>
 </html>
